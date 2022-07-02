@@ -1,0 +1,12 @@
+---
+- hosts:
+    - HLAB-VM01
+    - HLAB-TINY1
+    - HLAB-PLEX1
+    - HLAB-PLEX2
+    - HLAB-AMP-UT
+    - HLAB-GRAFANA
+    - HLAB-MSHIP
+  roles:
+    - domain_join
+  become: true
