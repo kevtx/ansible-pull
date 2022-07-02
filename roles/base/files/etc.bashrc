@@ -1,0 +1,106 @@
+# System-wide .bashrc file for interactive bash(1) shells.
+
+export EDITOR=nano
+
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+shopt -s globstar
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then debian_chroot=$(cat /etc/debian_chroot); fi
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in xterm*|rxvt*) PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1" ;; *) ;; esac
+
+# enable bash completion in interactive shells
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+# if the command-not-found package is installed, use it
+if [ -x /usr/lib/command-not-found -o -x /usr/share/command-not-found/command-not-found ]; then
+	function command_not_found_handle {
+	        # check because c-n-f could've been removed in the meantime
+                if [ -x /usr/lib/command-not-found ]; then
+		   /usr/lib/command-not-found -- "$1"
+                   return $?
+                elif [ -x /usr/share/command-not-found/command-not-found ]; then
+		   /usr/share/command-not-found/command-not-found -- "$1"
+                   return $?
+		else
+		   printf "%s: command not found\n" "$1" >&2
+		   return 127
+		fi
+	}
+fi
+
+# \\ || Custom PS1 Configurations || \\
+_ps() {
+    local bold="\[\e[1m\]"
+    local dim="\[\e[2m\]"
+    local underline="\[\e[4m\]"
+    local blink="\[\e[5m\]"
+    local x="\[\e[0m\]"
+
+    local black="\[\e[30m\]"
+    local red="\[\e[31m\]"
+    local green="\[\e[32m\]"
+    local yellow="\[\e[33m\]"
+    local blue="\[\e[34m\]"
+    local magenta="\[\e[35m\]"
+    local cyan="\[\e[36m\]"
+    local lightgray="\[\e[37m\]"
+    local darkgray="\[\e[90m\]"
+    local lightred="\[\e[91m\]"
+    local lightgreen="\[\e[92m\]"
+    local lightyellow="\[\e[93m\]"
+    local lightblue="\[\e[94m\]"
+    local lightmagenta="\[\e[95m\]"
+    local lightcyan="\[\e[96m\]"
+    local white="\[\e[97m\]"
+
+    _01() {
+      local clock="$dim\t$x"
+      local user="$bold$white\u$x"
+      local host="$dim$bold$white\h$x"
+      local cdir="$dim[$x $white\W$x $dim]$x"
+      local end="$dim$bold$white\$$x"
+
+      if [ "$(id -u)" -eq 0 ]; then
+        local user="$bold$underline$red\u$x"
+        local end="$bold$red#$x"
+      elif [ "$(id -un)" == "kevin" ]; then
+        local user="$bold$yellow\u$x"
+      elif [ "$(id -un)" == "ansible" ]; then
+        local user="$bold$green\u$x"
+      else
+        local user="$bold$lightcyan\u$x"
+      fi
+      export PS1="$clock $user$dim@$x$host $cdir $end "
+      return
+    }
+  $@
+}
+
+_ps _01

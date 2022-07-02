@@ -1,0 +1,12 @@
+---
+- copy:
+    src: /opt/.ansible/roles/kevtx-CA/files/kevtx-CA-AD.crt
+    dest: /usr/local/share/ca-certificates/kevtx-CA-AD.crt
+    mode: a=r
+
+- apt:
+    name: ca-certificates
+    state: present
+    cache_valid_time: 604800
+
+- shell: /usr/sbin/update-ca-certificates

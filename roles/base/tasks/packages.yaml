@@ -1,0 +1,12 @@
+---
+  - name: Install misc. packages
+    apt:
+      name:
+        - dnsutils
+        - bind9-utils
+        - telnet
+        - curl
+        - zip
+        - unzip
+      state: present
+      cache_valid_time: 604800

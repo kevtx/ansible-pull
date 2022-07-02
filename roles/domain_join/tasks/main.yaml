@@ -1,0 +1,85 @@
+---
+- include_vars: "/opt/.ansible/.vaults/domain_join"
+
+- name: Install dependencies
+  become: true
+  apt: 
+    name: "{{ item }}"
+    state: latest
+    cache_valid_time: 604800
+  with_items: "{{ pkgs }}"
+
+- name: Install pexpect via pip
+  become: true
+  pip:
+    name: pexpect
+    state: present
+
+- name: Copy realmd.conf
+  become: true
+  template: 
+    src: realmd.conf.j2
+    dest: /etc/realmd.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Discover realm
+  command: /bin/bash -c "/usr/sbin/realm discover {{ ad.domain }}"
+  register: realm_discover_results
+
+- name: Discover realm debug
+  debug: 
+    msg: "{{ realm_discover_results.stdout }}"
+
+- name: Checking to see if system is already joined to AD
+  command: /bin/bash -c "/usr/sbin/realm list"
+  register: realm_list_results
+
+- name: Debug realm_list_results
+  debug:
+    msg: "{{ realm_list_results.stdout }}"
+
+- name: Join system to AD
+  become: true
+  expect:
+    command: /bin/bash -c "/usr/sbin/realm join {{ ad.domain }} --computer-ou='OU={{ host.site }},OU=Sites,DC=kevtx,DC=lan' --user={{ ad.user }}"
+    responses:
+      (?i)Password: "{{ pw__domainjoin }}"
+  ignore_errors: true
+  when: realm_list_results.stdout == ""
+
+- name: Copy sssd.conf
+  template:
+    src: sssd.conf.j2
+    dest: /etc/sssd/sssd.conf
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Restart sssd service
+  service:
+    name: sssd
+    state: restarted
+
+- name: Copy pam common-session
+  template: 
+    src: common-session.j2
+    dest: /etc/pam.d/common-session
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Include sshd role tasks
+  include_tasks: /opt/.ansible/roles/sshd/tasks/main.yaml
+
+- name: Add domain admins group to sudoers
+  lineinfile:
+    dest: "/etc/sudoers.d/{{ ad.domain | replace('.','_') }}"
+    line: '%domain\ admins  ALL=(ALL:ALL)   ALL'
+    regexp: '^%domain'
+    state: present
+    owner: root
+    group: root
+    mode: 0400
+    create: yes

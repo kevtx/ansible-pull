@@ -1,0 +1,14 @@
+---
+- name: Delete old sshd_config ('ansible.conf')
+  file:
+    path: /etc/ssh/sshd_config.d/ansible.conf
+    state: absent
+
+- name: Add sshd_config - local user 'ansible'
+  copy:
+    src: /opt/.ansible/roles/sshd/files/lusr/ansible.conf
+    dest: /etc/ssh/sshd_config.d/lusr-ansible.conf
+    owner: root
+    group: root
+    mode: u=rw,go-rwx
+  notify: Reload sshd

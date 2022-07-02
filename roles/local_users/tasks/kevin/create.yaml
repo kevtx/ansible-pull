@@ -1,0 +1,33 @@
+---
+- name: Create local group 'kevin' 
+  group:
+    name: kevin
+    state: present
+
+- name: Create local user 'kevin' 
+  user:
+    name: kevin
+    create_home: yes
+    skeleton: /etc/skel
+    generate_ssh_key: no
+    group: kevin
+    groups: sudo
+    shell: /bin/bash
+
+- name: Install user 'kevin' SSH pubkey
+  authorized_key:
+    user: kevin
+    state: present
+    exclusive: yes
+    key: https://github.com/blasphemite.keys
+
+- name: Verify home dir ownership (/home/kevin)
+  file:
+    path: /home/kevin
+    state: directory
+    owner: kevin
+    group: kevin
+    recurse: yes
+
+- name: Include task - install sshd_config (lusr-kevin)
+  include_tasks: /opt/.ansible/roles/sshd/tasks/lusr/kevin/install.yaml

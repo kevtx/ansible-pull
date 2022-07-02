@@ -1,0 +1,15 @@
+---
+- name: Finding /etc/ssh/sshd_config.d/kevtx.lan-*.conf
+  find:
+    paths: /etc/ssh/sshd_config.d
+    patterns: "kevtx.lan-.*.conf"
+    use_regex: true
+    file_type: file
+  register: delete_these
+
+- name: Deleting /etc/ssh/sshd_config.d/kevtx.lan-*.conf
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ delete_these.files }}"
+  notify: Reload sshd

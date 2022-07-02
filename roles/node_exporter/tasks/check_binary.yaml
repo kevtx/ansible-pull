@@ -1,0 +1,38 @@
+---
+- stat:
+    path: /usr/bin/node_exporter
+  register: binary
+
+- name: Install target node_exporter from tarball (doesn't already exist)
+  include_tasks: install_tarball.yaml
+  when:
+    - not binary.stat.exists
+
+- file:
+    path: /usr/bin/node_exporter
+    owner: prometheus
+    group: prometheus
+    mode: u=rx,go-rwx
+
+- name: Check node_exporter version
+  shell: node_exporter --version
+  register: result
+
+- set_fact:
+    node_exporter_installed: "{{ result.stdout | regex_search('(?<=version\\s).+(?=\\s.branch)')}}"
+
+- name: Install target node_exporter from tarball (target version > installed version)
+  include_tasks: install_tarball.yaml
+  when:
+    - binary.stat.exists
+    - node_exporter_installed < node_exporter_target
+
+- debug: 
+    msg: "Target node_exporter version already installed ({{ node_exporter_target }})"
+  when:
+    - node_exporter_installed == node_exporter_target
+
+- debug: 
+    msg: "Installed node_exporter version ({{ node_exporter_installed }}) is newer than target ({{ node_exporter_target }})"
+  when:
+    - node_exporter_installed > node_exporter_target

@@ -1,0 +1,41 @@
+---
+- include_vars: vars/ansible.yaml
+
+- name: Create user 'ansible' home dir '/etc/ansible'
+  file:
+    path: /etc/ansible
+    state: directory
+    owner: ansible
+    group: ansible
+    mode: u=rwx,go-rwx
+
+- name: Create local group 'ansible' 
+  group:
+    name: ansible
+    state: present
+
+- name: Create local user 'ansible'
+  user:
+    name: ansible
+    create_home: no
+    generate_ssh_key: no
+    group: ansible
+    shell: /bin/bash
+    home: /etc/ansible
+
+- name: Install user 'ansible' SSH pubkey
+  authorized_key:
+    user: ansible
+    state: present
+    exclusive: yes
+    key: "{{ ssh.pubkey }}"
+
+- name: Verify home dir ownership (/etc/ansible)
+  file:
+    path: /etc/ansible
+    owner: ansible
+    group: ansible
+    recurse: yes
+
+- name: Include task - install sshd_config (lusr-ansible)
+  include_tasks: /opt/.ansible/roles/sshd/tasks/lusr/ansible/install.yaml

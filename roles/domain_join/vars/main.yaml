@@ -1,0 +1,16 @@
+---
+pkgs:
+  - realmd
+  - adcli
+  - sssd
+  - sssd-tools
+  - libnss-sss
+  - libpam-sss
+  - oddjob-mkhomedir
+  - samba-common
+  - python3-pip
+  - packagekit
+
+ad:
+  domain: kevtx.lan
+  user: svc-domainjoin

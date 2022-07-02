@@ -1,0 +1,22 @@
+[sssd]
+domains = {{ ad.domain }}
+config_file_version = 2
+services = nss, pam, sudo, ssh
+
+[domain/{{ ad.domain }}]
+default_shell = /bin/bash
+krb5_store_password_if_offline = True
+cache_credentials = True
+krb5_realm = {{ ad.domain | upper }}
+realmd_tags = manages-system joined-with-adcli
+id_provider = ad
+fallback_homedir = /home/%u
+ad_domain = {{ ad.domain }}
+use_fully_qualified_names = False
+ldap_id_mapping = True
+access_provider = ad
+ldap_user_extra_attrs = altSecurityIdentities:altSecurityIdentities
+ldap_user_ssh_public_key = altSecurityIdentities
+ldap_use_tokengroups = True
+ldap_referrals = False
+ignore_group_members = True
