@@ -1,0 +1,17 @@
+---
+  - name: Begin install for Debian-based distros
+    apt:
+      name: nano
+      state: latest
+      cache_valid_time: 604800
+
+  - name: nanorc
+    lineinfile:
+      dest: /etc/nanorc
+      insertbefore: BOF
+      line: "{{ item }}"
+    loop:
+      - "set tabsize 2"
+      - "set tabstospaces"
+      - "set linenumbers"
+      - "set softwrap"
