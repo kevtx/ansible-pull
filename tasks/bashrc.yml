@@ -1,0 +1,16 @@
+---
+  - name: /etc/bash.bashrc
+    copy:
+      src: files/bashrc_etc
+      dest: /etc/bash.bashrc
+      owner: root
+      group: root
+      mode: 0444
+
+  - name: /etc/skel/.bashrc
+    copy:
+      src: files/bashrc_skel
+      dest: /etc/skel/.bashrc
+      owner: root
+      group: root
+      mode: 0600

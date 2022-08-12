@@ -1,0 +1,12 @@
+---
+- copy:
+    src: files/kevtx-CA.crt
+    dest: /usr/local/share/ca-certificates/kevtx-CA.crt
+    mode: a=r
+
+- apt:
+    name: ca-certificates
+    state: present
+    cache_valid_time: 604800
+
+- shell: /usr/sbin/update-ca-certificates

@@ -1,0 +1,13 @@
+- name: Install packages
+  apt:
+    name:
+      - htop
+      - curl
+      - git
+      - dnsutils
+      - bind9-utils
+      - curl
+      - zip
+      - unzip
+    state: present
+    cache_valid_time: 604800

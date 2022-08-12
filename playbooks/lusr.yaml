@@ -1,5 +1,0 @@
----
-- hosts: all
-  roles:
-    - local_users
-  become: true

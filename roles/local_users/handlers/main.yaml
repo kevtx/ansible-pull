@@ -1,2 +1,0 @@
----
-- import_tasks: /opt/.ansible/roles/sshd/handlers/main.yaml
