@@ -1,7 +1,7 @@
 ---
 - copy:
-    src: files/kevtx-CA.crt
-    dest: /usr/local/share/ca-certificates/kevtx-CA.crt
+    src: files/*.crt
+    dest: /usr/local/share/ca-certificates/
     mode: a=r
 
 - apt:
