@@ -1,5 +1,6 @@
 ---
-node_exporter_target: 1.3.1
+- set_fact:
+    node_exporter_target: "1.3.1"
 
 - name: Create group 'prometheus'
   group:
