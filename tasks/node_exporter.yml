@@ -71,8 +71,29 @@
   when: not binary.stat.exists or
         (binary.stat.exists and node_exporter_installed < node_exporter_target)
 
-- file:
+- name: Make binary executable ('/usr/bin/node_exporter')
+  file:
     path: /usr/bin/node_exporter
+    state: link
     owner: prometheus
     group: prometheus
     mode: u=rx,go-rwx
+
+- name: Check /opt/prometheus ownership
+  file:
+    path: /opt/prometheus
+    state: directory
+    owner: prometheus
+    group: prometheus
+
+- name: Install node_exporter systemd service
+  copy:
+    src: node_exporter.service
+    dest: /etc/systemd/system/node_exporter.service
+
+- name: Configure node_exporter systemd service
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    state: started
+    name: node_exporter.service
