@@ -68,16 +68,15 @@
     owner: prometheus
     group: prometheus
     mode: u=rx,go-rwx
-  when: not binary.stat.exists or
-        (binary.stat.exists and node_exporter_installed < node_exporter_target)
+  #when: not binary.stat.exists or
+        #(binary.stat.exists and node_exporter_installed < node_exporter_target)
 
-- name: Make binary executable ('/usr/bin/node_exporter')
-  file:
-    path: /usr/bin/node_exporter
-    state: link
-    owner: prometheus
-    group: prometheus
-    mode: u=rx,go-rwx
+#- name: Make binary executable ('/usr/bin/node_exporter')
+  #file:
+    #path: /usr/bin/node_exporter
+    #owner: prometheus
+    #group: prometheus
+    #mode: u=rx,go-rwx
 
 - name: Check /opt/.node_exporter ownership
   file:
