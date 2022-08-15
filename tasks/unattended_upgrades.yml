@@ -1,24 +1,29 @@
 ---
-  - name: Install packages
-    apt:
-      name:
-        - unattended-upgrades
-        - apt-listchanges
-      state: latest
-      cache_valid_time: 604800
-    notify: Start unattended-upgrades
+- name: Install packages
+  apt:
+    name:
+      - unattended-upgrades
+      - apt-listchanges
+    state: latest
+    cache_valid_time: 604800
 
-  - name: Configuration
-    lineinfile:
-      dest: /etc/apt/apt.conf.d/50unattended-upgrades
-      regexp: "{{ item.regexp }}"
-      line: "{{ item.line }}"
-    loop:
-      - { regexp: 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "', line: 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";' }
-      - { regexp: 'Unattended-Upgrade::Remove-Unused-Dependencies "', line: 'Unattended-Upgrade::Remove-Unused-Dependencies "true";' }
-      - { regexp: 'Unattended-Upgrade::Remove-New-Unused-Dependencies "', line: 'Unattended-Upgrade::Remove-New-Unused-Dependencies "true";' }
-      - { regexp: 'Unattended-Upgrade::Automatic-Reboot "', line: 'Unattended-Upgrade::Automatic-Reboot "true";' }
-      - { regexp: 'Unattended-Upgrade::Automatic-Reboot-WithUsers "', line: 'Unattended-Upgrade::Automatic-Reboot-WithUsers "false";' }
-      - { regexp: 'Unattended-Upgrade::Automatic-Reboot-Time "', line: 'Unattended-Upgrade::Automatic-Reboot-Time "4:00";' }
-      - { regexp: 'Acquire::http::Dl-Limit "', line: 'Acquire::http::Dl-Limit "150";' }
-    notify: Start unattended-upgrades
+- name: Configuration
+  lineinfile:
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "', line: 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";' }
+    - { regexp: 'Unattended-Upgrade::Remove-Unused-Dependencies "', line: 'Unattended-Upgrade::Remove-Unused-Dependencies "true";' }
+    - { regexp: 'Unattended-Upgrade::Remove-New-Unused-Dependencies "', line: 'Unattended-Upgrade::Remove-New-Unused-Dependencies "true";' }
+    - { regexp: 'Unattended-Upgrade::Automatic-Reboot "', line: 'Unattended-Upgrade::Automatic-Reboot "true";' }
+    - { regexp: 'Unattended-Upgrade::Automatic-Reboot-WithUsers "', line: 'Unattended-Upgrade::Automatic-Reboot-WithUsers "false";' }
+    - { regexp: 'Unattended-Upgrade::Automatic-Reboot-Time "', line: 'Unattended-Upgrade::Automatic-Reboot-Time "4:00";' }
+    - { regexp: 'Acquire::http::Dl-Limit "', line: 'Acquire::http::Dl-Limit "150";' }
+
+- name: Enable/start 'unattended-upgrades' systemd service
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    state: started
+    name: unattended-upgrades.service

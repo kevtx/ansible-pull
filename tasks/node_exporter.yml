@@ -16,9 +16,9 @@
     shell: /sbin/nologin
     state: present
 
-- name: Create dir '/opt/prometheus'
+- name: Create dir '/opt/.node_exporter'
   file:
-    path: /opt/prometheus
+    path: /opt/.node_exporter
     state: directory
     owner: prometheus
     group: prometheus
@@ -27,7 +27,7 @@
 - name: Install node_exporter service .env file
   copy:
     src: node_exporter.env
-    dest: /opt/prometheus/node_exporter.env
+    dest: /opt/.node_exporter/.systemd.env
     owner: prometheus
     group: prometheus
     mode: u=rw,go-rwx
@@ -48,21 +48,21 @@
 - name: Download node_exporter tarball
   get_url:
     url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_target }}/node_exporter-{{ node_exporter_target }}.linux-amd64.tar.gz
-    dest: /opt/prometheus
+    dest: /opt/.node_exporter
   when: not binary.stat.exists or
         (binary.stat.exists and node_exporter_installed < node_exporter_target)
 
 - name: Extract node_exporter tarball
   unarchive:
     remote_src: yes
-    src: /opt/prometheus/node_exporter-{{ node_exporter_target }}.linux-amd64.tar.gz
-    dest: /opt/prometheus
+    src: /opt/.node_exporter/node_exporter-{{ node_exporter_target }}.linux-amd64.tar.gz
+    dest: /opt/.node_exporter
   when: not binary.stat.exists or
         (binary.stat.exists and node_exporter_installed < node_exporter_target)
 
 - name: Create symlink ('/usr/bin/node_exporter')
   file:
-    src: /opt/prometheus/node_exporter-{{ node_exporter_target }}.linux-amd64/node_exporter
+    src: /opt/.node_exporter/node_exporter-{{ node_exporter_target }}.linux-amd64/node_exporter
     path: /usr/bin/node_exporter
     state: link
     owner: prometheus
@@ -79,9 +79,9 @@
     group: prometheus
     mode: u=rx,go-rwx
 
-- name: Check /opt/prometheus ownership
+- name: Check /opt/.node_exporter ownership
   file:
-    path: /opt/prometheus
+    path: /opt/.node_exporter
     state: directory
     owner: prometheus
     group: prometheus
@@ -91,7 +91,7 @@
     src: node_exporter.service
     dest: /etc/systemd/system/node_exporter.service
 
-- name: Configure node_exporter systemd service
+- name: Enable/start 'node_exporter' systemd service
   systemd:
     daemon_reload: yes
     enabled: yes
