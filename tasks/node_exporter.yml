@@ -87,7 +87,7 @@
 
 - name: Install node_exporter systemd service
   copy:
-    src: files/node_exporter/systemd/service
+    src: files/node_exporter/systemd.service
     dest: /etc/systemd/system/node_exporter.service
 
 - name: Enable/start 'node_exporter' systemd service
