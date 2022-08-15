@@ -3,7 +3,7 @@ Description=Prometheus Node Exporter
 
 [Service]
 User=prometheus
-EnvironmentFile=/opt/prometheus/node_exporter.env
+EnvironmentFile=/opt/.node_exporter/.systemd.env
 ExecStart=/usr/bin/node_exporter $OPTIONS
 
 [Install]
