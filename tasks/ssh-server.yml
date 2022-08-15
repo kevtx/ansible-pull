@@ -1,0 +1,29 @@
+---
+- name: Install dependencies
+  apt: 
+    name: openssh-server
+    state: latest
+    cache_valid_time: 604800
+
+- name: Set sshd_config.d folder permissions
+  file:
+    path: /etc/ssh/sshd_config.d
+    state: directory
+    owner: root
+    group: root
+    mode: u=rx,go-rwx
+
+- name: Add base sshd_config boilerplate
+  copy:
+    src: files/ssh-server/sshd_config.default
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: u=r,go-rwx
+
+- name: Enable/start 'sshd' systemd service
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    state: reloaded
+    name: sshd.service

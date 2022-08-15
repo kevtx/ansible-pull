@@ -15,6 +15,7 @@
     - include: tasks/nanorc.yml
     - include: tasks/node_exporter.yml
     - include: tasks/unattended_upgrades.yml
+    - include: tasks/join-domain.yml
     - include: tasks/cron.yml
 
     #- include: tasks/certs.yml

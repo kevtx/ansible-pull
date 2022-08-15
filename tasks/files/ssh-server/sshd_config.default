@@ -1,0 +1,17 @@
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_dsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+AcceptEnv LANG LC_*
+PrintMotd no
+
+PermitRootLogin no
+PubkeyAuthentication no
+PermitEmptyPasswords no
+PasswordAuthentication no
+
+ChallengeResponseAuthentication no
+X11Forwarding no
+
+Include /etc/ssh/sshd_config.d/*.conf

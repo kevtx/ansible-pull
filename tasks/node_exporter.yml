@@ -26,8 +26,8 @@
 
 - name: Install node_exporter service .env file
   copy:
-    src: files/node_exporter.env
-    dest: /opt/.node_exporter/.systemd.env
+    src: files/node_exporter/systemd.env
+    dest: /opt/.node_exporter/systemd.env
     owner: prometheus
     group: prometheus
     mode: u=rw,go-rwx
@@ -87,7 +87,7 @@
 
 - name: Install node_exporter systemd service
   copy:
-    src: files/node_exporter.service
+    src: files/node_exporter/systemd/service
     dest: /etc/systemd/system/node_exporter.service
 
 - name: Enable/start 'node_exporter' systemd service

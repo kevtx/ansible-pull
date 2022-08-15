@@ -1,6 +1,6 @@
 ---
 - copy:
-    src: files/*.crt
+    src: files/pki/kevtx-CA-root.crt
     dest: /usr/local/share/ca-certificates/
     mode: a=r
 

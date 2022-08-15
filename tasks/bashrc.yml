@@ -1,7 +1,7 @@
 ---
   - name: /etc/bash.bashrc
     copy:
-      src: files/bashrc_etc
+      src: files/bashrc/etc
       dest: /etc/bash.bashrc
       owner: root
       group: root
@@ -9,7 +9,7 @@
 
   - name: /etc/skel/.bashrc
     copy:
-      src: files/bashrc_skel
+      src: files/bashrc/skel
       dest: /etc/skel/.bashrc
       owner: root
       group: root
