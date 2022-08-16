@@ -1,5 +1,8 @@
 ---
-- include_vars: "files/join-domain/vault.yml"
+- include_vars: "files/domain-join/kevtx-lan/main.yml"
+- include_vars: "files/domain-join/kevtx-lan/vault.yml"
+
+- include_vars: "files/domain-join/dependencies.yml"
 
 - name: Install dependencies
   become: true
@@ -7,7 +10,7 @@
     name: "{{ item }}"
     state: latest
     cache_valid_time: 604800
-  with_items: "{{ pkgs }}"
+  with_items: "{{ dependencies }}"
 
 - name: Install pexpect via pip
   become: true
@@ -18,7 +21,7 @@
 - name: Copy realmd.conf
   become: true
   template: 
-    src: files/join-domain/realmd.conf.j2
+    src: files/domain-join/realmd.conf.j2
     dest: /etc/realmd.conf
     owner: root
     group: root
@@ -43,7 +46,7 @@
 - name: Join system to AD
   become: true
   expect:
-    command: /bin/bash -c "/usr/sbin/realm join {{ ad.domain }} --computer-ou='OU={{ host.site }},OU=Sites,DC=kevtx,DC=lan' --user={{ ad.user }}"
+    command: /bin/bash -c "/usr/sbin/realm join {{ ad.domain }} --computer-ou='OU=Computers,DC=kevtx,DC=lan' --user={{ ad.user }}"
     responses:
       (?i)Password: "{{ pw__domainjoin }}"
   ignore_errors: true
@@ -51,7 +54,7 @@
 
 - name: Copy sssd.conf
   template:
-    src: files/join-domain/sssd.conf.j2
+    src: files/domain-join/sssd.conf.j2
     dest: /etc/sssd/sssd.conf
     owner: root
     group: root
@@ -66,7 +69,7 @@
 
 - name: Copy pam common-session
   template: 
-    src: files/join-domain/common-session.j2
+    src: files/domain-join/common-session.j2
     dest: /etc/pam.d/common-session
     owner: root
     group: root
@@ -74,8 +77,8 @@
 
 - name: Copy sshd_config.d files
   copy:
-    src: files/join-domain/sshd_config/{{ item.src }}.conf
-    dest: "/etc/ssh/sshd_config.d/{{ ad.domain }}--{{ item.src }}.conf"
+    src: "files/domain-join/sshd_config/{{ item }}.conf"
+    dest: "/etc/ssh/sshd_config.d/{{ ad.domain }}--{{ item }}.conf"
     owner: root
     group: root
     mode: ug=r,o-rwx
@@ -84,13 +87,20 @@
     - grp-allow_key
     - grp-allow_pwd
 
-- name: Add domain admins group to sudoers
-  lineinfile:
-    dest: "/etc/sudoers.d/{{ ad.domain | replace('.','_') }}"
-    line: '%domain\ admins  ALL=(ALL:ALL)   ALL'
-    regexp: '^%domain'
-    state: present
-    owner: root
-    group: root
-    mode: u=r,go-rwx
-    create: yes
+- name: Restart 'sshd' systemd service
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    state: reloaded
+    name: sshd.service
+
+#- name: Add domain admins group to sudoers
+  #lineinfile:
+    #dest: "/etc/sudoers.d/{{ ad.domain | replace('.','_') }}"
+    #line: '%domain\ admins  ALL=(ALL:ALL)   ALL'
+    #regexp: '^%domain'
+    #state: present
+    #owner: root
+    #group: root
+    #mode: u=r,go-rwx
+    #create: yes
