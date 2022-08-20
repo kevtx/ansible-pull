@@ -3,7 +3,7 @@
     name: ansible
     system: yes
     local: yes
-    home: "/root/.ansible/pull/{{ ansible_hostname }}"
+    home: "/root/.ansible/pull/{{ ansible_fqdn }}"
     create_home: no
     group: ansible
     shell: /sbin/nologin
