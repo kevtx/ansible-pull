@@ -22,10 +22,10 @@
     key: https://github.com/kevtx-bot.keys
     exclusive: yes
 
-- name: Add 'sshd_config.d/localuser--ansible.conf'
+- name: Add 'sshd_config.d/local--user_ansible.conf'
   copy:
-    src: files/ssh-server/localuser--ansible.conf
-    dest: /etc/ssh/sshd_config.d/localuser--ansible.conf
+    src: files/ssh-server/local--user_ansible.conf
+    dest: /etc/ssh/sshd_config.d/local--user_ansible.conf
     owner: root
     group: root
     mode: u=rw,go=r
