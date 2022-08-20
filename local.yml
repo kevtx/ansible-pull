@@ -9,12 +9,10 @@
       changed_when: False
 
   tasks:
+    - include: tasks/ansible.yml
     - include: tasks/ssh-server.yml
-    - include: tasks/users.yml
     - include: tasks/packages.yml
     - include: tasks/bashrc.yml
     - include: tasks/nanorc.yml
-    - include: tasks/node_exporter.yml
     - include: tasks/unattended_upgrades.yml
     - include: tasks/cron.yml
-    #- include: tasks/certs.yml
