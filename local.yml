@@ -9,9 +9,9 @@
       changed_when: False
 
   tasks:
+    - include: tasks/packages.yml
     - include: tasks/ansible.yml
     - include: tasks/ssh-server.yml
-    - include: tasks/packages.yml
     - include: tasks/bashrc.yml
     - include: tasks/nanorc.yml
     - include: tasks/unattended_upgrades.yml
