@@ -9,5 +9,6 @@
       - curl
       - zip
       - unzip
+      - libuser
     state: present
     cache_valid_time: 604800
