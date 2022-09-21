@@ -1,14 +1,22 @@
-- name: user 'ansible' - present
+- name: Ansible group
+  group:
+    name: ansible
+    local: yes
+    system: yes
+    state: present
+
+- name: Ansible user
   user:
     name: ansible
-    system: yes
-    local: yes
-    home: "/root/.ansible/pull/{{ ansible_fqdn }}"
+    shell: /sbin/nologin
+    home: /root/.ansible/pull
     create_home: no
     group: ansible
-    shell: /sbin/nologin
+    groups: ''
+    system: yes
+    state: present
 
-- name: user 'ansible' - sudoers
+- name: Ansible user (sudoers)
   copy:
     src: files/sudoers/ansible
     dest: /etc/sudoers.d/ansible
@@ -16,13 +24,13 @@
     group: root
     mode: 0440
 
-- name: user 'ansible' - authorized_keys
+- name: Ansible user (authorized_keys)
   authorized_key:
     user: ansible
     key: https://github.com/kevtx-bot.keys
     exclusive: yes
 
-- name: Add 'sshd_config.d/local--user_ansible.conf'
+- name: Ansible user (ssh_config.d)
   copy:
     src: files/ssh-server/local--user_ansible.conf
     dest: /etc/ssh/sshd_config.d/local--user_ansible.conf
