@@ -1,7 +1,6 @@
 - name: Ansible group
   group:
     name: ansible
-    local: yes
     system: yes
     state: present
 
