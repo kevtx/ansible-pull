@@ -1,6 +1,6 @@
-- name: Install cron job [ github.com/kevtx/ansible-pull:auto-cron ]
+- name: Install cron job [ git.kevtx.com/kevtx/ansible-pull:auto-cron ]
   cron:
     user: ansible
     name: "ansible provision"
     minute: "*/15"
-    job: "/usr/bin/ansible-pull -o -U https://github.com/kevtx/ansible-pull.git -C auto-cron > /dev/null"
+    job: "/usr/bin/ansible-pull -o -U https://git.kevtx.com/kevtx/ansible-pull -C auto-cron > /dev/null"
