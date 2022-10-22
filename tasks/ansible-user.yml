@@ -26,7 +26,7 @@
 - name: Ansible user (authorized_keys)
   authorized_key:
     user: ansible
-    key: https://raw.githubusercontent.com/kevtx/ansible-pull/auto-cron/tasks/ansible-user/authorized_keys
+    key: https://raw.githubusercontent.com/kevtx/ansible-pull/auto-cron/tasks/files/ansible-user/authorized_keys
     exclusive: yes
 
 - name: Ansible user (ssh_config.d)
